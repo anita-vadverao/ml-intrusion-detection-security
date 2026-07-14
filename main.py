@@ -478,13 +478,37 @@ def read_and_predict(test_data):
 # Load and execute Saved Model Execution
 read_and_predict(X_test)
 
-print("Scatter matrix analysis: ")
-selected_columns1 = ['dur', 'dbytes', 'Dload', 'swin', 'dwin', 'stcpb', 'dtcpb', 'smeansz']
-selected_columns2 = ['dmeansz', 'trans_depth', 'ct_srv_src', 'ct_srv_dst', 'attack', 'proto_encoded', 'state_encoded', 'service_encoded']
-# Create a scatter matrix for the selected columns
-scatter_matrix(df[selected_columns1],figsize= (16,16), color="red", alpha =0.5)
-scatter_matrix(df[selected_columns2],figsize= (16,16), color="red", alpha =0.5)
-plt.ylabel(12)
-plt.savefig(f"{run_folder}/Scatter matrix analysis: ")
-plt.close()
+# print("Scatter matrix analysis: ")
+# selected_columns1 = ['dur', 'dbytes', 'Dload', 'swin', 'dwin', 'stcpb', 'dtcpb', 'smeansz']
+# selected_columns2 = ['dmeansz', 'trans_depth', 'ct_srv_src', 'ct_srv_dst', 'attack', 'proto_encoded', 'state_encoded', 'service_encoded']
+# # Create a scatter matrix for the selected columns
+# scatter_matrix(df[selected_columns1],figsize= (16,16), color="red", alpha =0.5)
+# scatter_matrix(df[selected_columns2],figsize= (16,16), color="red", alpha =0.5)
+# plt.ylabel(12)
+# plt.savefig(f"{run_folder}/Scatter matrix analysis ")
+# plt.close()
 
+html_report = f"""
+<html>
+<head><title>Intrusion Detection Model Report</title></head>
+<body>
+<h1>Model Evaluation Report</h1>
+<h2>Accuracy Comparison</h2>
+<table border="1" cellpadding="5">
+<tr><th>Model</th><th>Accuracy</th></tr>
+<tr><td>KNN</td><td>{accuracy_score(y_test, y_pred_classifier_knn):.4f}</td></tr>
+<tr><td>Random Forest</td><td>{accuracy_score(y_test, y_pred_classifier_rfc):.4f}</td></tr>
+<tr><td>Logistic Regression</td><td>{accuracy_score(y_test, y_pred_lr):.4f}</td></tr>
+</table>
+<h2>Confusion Matrices</h2>
+<img src="confusion matrix KNN.png" width="400">
+<img src="Confusion Matrix Random Forest.png" width="400">
+<img src="Confusion Matrix Logistics Regression.png" width="400">
+<h2>ROC Curve</h2>
+<img src="ROC curve.png" width="500">
+</body>
+</html>
+"""
+
+with open(f'{run_folder}/report.html', 'w') as f:
+    f.write(html_report)
