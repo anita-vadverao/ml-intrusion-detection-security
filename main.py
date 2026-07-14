@@ -505,7 +505,7 @@ html_report = f"""
 <img src="Confusion Matrix Random Forest.png" width="400">
 <img src="Confusion Matrix Logistics Regression.png" width="400">
 <h2>ROC Curve</h2>
-<img src="ROC curve.png" width="500">
+<img src="ROC curve.png" width="400">
 </body>
 </html>
 """
