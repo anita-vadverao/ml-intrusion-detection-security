@@ -45,7 +45,6 @@ for column in columns_to_encode:
 df.drop(columns_to_encode, axis=1, inplace=True)
 df.to_csv('updated_UNSW-NB15.csv', index=False)
 
-
 # columns_to_keep =['proto','state','dur','sbytes','dbytes','sttl','dttl','sloss','dloss','service','Sload','Dload','Spkts','Dpkts','attack']
 columns_to_keep =['dur','Dload','swin','dwin','dbytes','stcpb','dtcpb','smeansz','dmeansz','trans_depth','ct_srv_src','ct_srv_dst','attack','proto_encoded','state_encoded','service_encoded']
 df.drop(columns=df.columns.difference(columns_to_keep), inplace=True)
@@ -58,6 +57,22 @@ print("size_col_name_list = ", size_col_name_list)
 print("df.shape ", df.shape)
 X = df.drop(labels = ["attack"],axis = 1)
 Y = df["attack"].values
+
+# Create Train & Test Data
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=101)
+print("X_train ", X_train)
+print("X_test ", X_test)
+print("y_train ", y_train)
+print("y_test ", y_test)
+
+# for standardizing the dataset
+sc = StandardScaler()
+sc.fit(X_train)
+X_train_std = sc.transform(X_train)
+X_test_std = sc.transform(X_test)
+
+iris = load_iris()
+X1, y1 = iris.data, iris.target
 
 #Exploratory Data Analysis
 #histogram
@@ -113,22 +128,6 @@ plot_dis_number("ct_srv_dst")
 plot_dis_number("proto_encoded")
 plot_dis_number("state_encoded")
 plot_dis_number("service_encoded")
-
-# Create Train & Test Data
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=101)
-print("X_train ", X_train)
-print("X_test ", X_test)
-print("y_train ", y_train)
-print("y_test ", y_test)
-
-# for standardizing the dataset
-sc = StandardScaler()
-sc.fit(X_train)
-X_train_std = sc.transform(X_train)
-X_test_std = sc.transform(X_test)
-
-iris = load_iris()
-X1, y1 = iris.data, iris.target
 
 #supervised learning algorithm - KNN
 knn_range = range(1,5)
@@ -273,7 +272,7 @@ plt.close()
 accuracy_scores_lr = []
 weights, params = [], []
 for c in np.arange(-5., 4.):
-    lr_classifier = LogisticRegression(C=10.**c, random_state=50)
+    lr_classifier = LogisticRegression(C=10.**c, random_state=50,max_iter=1000)
     lr_classifier.fit(X_train_std, y_train)
     weights.append(lr_classifier.coef_[0])
     params.append(10**c)
@@ -294,7 +293,7 @@ plt.close()
 mean_accuracy_lr = []
 weights, params = [], []
 for c in np.arange(-5., 4.):
-    lr = LogisticRegression(C=10.**c, random_state=50)
+    lr = LogisticRegression(C=10.**c, random_state=50, max_iter=1000)
     lr.fit(X_train_std, y_train)
     weights.append(lr.coef_[0])
     params.append(10**c)
